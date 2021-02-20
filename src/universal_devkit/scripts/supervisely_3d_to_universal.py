@@ -1,9 +1,9 @@
 """
 Script to format annotations from supervisely.io into 
-the custom UMA format
+the custom universal format
 
 
-$ python format_pcd_annotations.py -i input_directory -o output_directory
+$ python supervisely_3d_to_universal.py -i input_directory -o output_directory
 """
 
 import argparse
