@@ -2,10 +2,6 @@ import pytest
 
 from universal_devkit.skeleton import fib, main
 
-__author__ = "Eric Wiener"
-__copyright__ = "Eric Wiener"
-__license__ = "MIT"
-
 
 def test_fib():
     """API Tests"""

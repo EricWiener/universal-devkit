@@ -26,12 +26,7 @@ import sys
 
 from universal_devkit import __version__
 
-__author__ = "Eric Wiener"
-__copyright__ = "Eric Wiener"
-__license__ = "MIT"
-
 _logger = logging.getLogger(__name__)
-
 
 # ---- Python API ----
 # The functions defined in this section can be imported by users in their
