@@ -7,7 +7,7 @@ auto_cancellation: false
 env:
   PATH: ${HOME}/.local/bin:${PATH}
   # ^  add user paths
-  COVERALLS_REPO_TOKEN: ENCRYPTED[]
+  COVERALLS_REPO_TOKEN: ENCRYPTED[98570941c31f2861a1fe02720179787523205ebe3ebe2ba615f0405a20698783eaba8c000f0d7a71a8f9ed8cebe8c62f]
   # ^ ADD YOUR ENCRYPTED TOKEN HERE: https://cirrus-ci.org/guide/writing-tasks/#encrypted-variables
   PIP_CACHE: ${HOME}/.cache/pip
   LC_ALL: C.UTF-8
