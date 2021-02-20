@@ -1,0 +1,5 @@
+logfile, date_captured, vehicle, location, notes
+log1.txt, "2021-07-01", "big boat", "music pond", "This is the first log"
+log2.txt, "2021-02-01", "small boat", "other pond", "This is the second log"
+random-name.txt, "2020-07-01", "medium boat", "not a pond", "This is the random log"
+ima_log.txt, "2019-07-01", "boat boat", "ocean", "This is the ima log"
