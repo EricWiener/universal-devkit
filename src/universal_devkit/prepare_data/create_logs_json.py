@@ -2,6 +2,7 @@ import glob
 import random
 import os
 import csv
+import json
 
 def get_logs(logs_dir_path):
     """Creates descriptions of log files in a directory.
@@ -14,27 +15,28 @@ def get_logs(logs_dir_path):
     """
 
     # @TODO: assert that only one CSV file
-    numCSV = len(glob.glob(logs_dir_path, "*.csv"))
+    os.chdir(logs_dir_path)
+    numCSV = len(glob.glob("*.csv"))
     assert numCSV == 1
 
     # @TODO: read in a CSV of form: "logfile, date_captured, vehicle, location, notes"
     log_data = []
-    for file in os.listdir(logs_dir_path):
-        if file.endswith(".csv"):
-            with open(logs_dir_path + file) as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=',')
-                line_number = 0
-                for row in csv_reader:
-                    if line_number != 0:
-                        numLogFile = len(glob.glob(logs_dir_path, row[0]))
-                        assert numLogFile == 1
+    for file in glob.glob("*.csv"):
+        with open(logs_dir_path + file) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_number = 0
+            for row in csv_reader:
+                if line_number != 0:
+                    numLogFile = len(glob.glob(row[0]))
+                    assert numLogFile == 1
 
-                        token = create_token()
-                        csv_row_dict = {"token": token, "logfile": row[0], "vehicle": row[2], "date_captured": row[1],
-                                        "location": row[3]}
+                    token = create_token()
 
-                        log_data.append(csv_row_dict)
-                    line_number = line_number + 1
+                    csv_row_dict = {"token": token, "logfile": row[0], "vehicle": row[2], "date_captured": row[1],
+                                    "location": row[3]}
+
+                    log_data.append(csv_row_dict)
+                line_number = line_number + 1
 
     # @TODO: make sure all the logfiles in the CSV file correspond to actual log files
     # in the directory
@@ -49,4 +51,7 @@ def get_logs(logs_dir_path):
     # "location": "music-pond"
     # },
 
+    with open(logs_dir_path + "\\" + "logs.json", 'w') as outfile:
+        json.dump(log_data, outfile)
     return log_data
+
