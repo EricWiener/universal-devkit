@@ -15,7 +15,9 @@ https://github.com/uos/rospy_message_converter
 $ python IMU_pose.py -i raise-the-flag_imu.bag -t /imu/data/raw -o output_folder
 """
 
-import os
+import pathlib
+import utils.py
+from pathlib import Path
 import rosbag
 import json
 import argparse
@@ -54,8 +56,8 @@ def get_timestamp(imu_dict):
 
 
 def main(input_bag_path, topic_specified, output_directory):
-	if not os.path.exists(output_directory):
-		os.makedirs(output_directory)
+	p = pathlib.Path(output_directory)
+	p.mkdir(parents=True, exist_ok=True)
 
 	    # Read point cloud data from bag.
 	input_bag = rosbag.Bag(input_bag_path)
@@ -83,12 +85,9 @@ def main(input_bag_path, topic_specified, output_directory):
 		  
 	input_bag.close()
 	data["timestamps"] = timestamps
-		# Save
 	file_name = "IMU"
-	file_path = os.path.join(output_directory, file_name + ".json")
-	with open(file_path, 'w') as outfile:
-		json.dump(data, outfile)
-
+	file_path = Path.cwd() / output_directory / (file_name + ".json")
+	write_json(data, file_path)
 
 
 if __name__ == "__main__":
