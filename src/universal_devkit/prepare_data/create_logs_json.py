@@ -2,6 +2,7 @@ import glob
 import random
 import os
 import csv
+import json
 
 def get_logs(logs_dir_path):
     """Creates descriptions of log files in a directory.
@@ -13,40 +14,41 @@ def get_logs(logs_dir_path):
         list: a list of dictionaries with information about all the logs
     """
 
-    # @TODO: assert that only one CSV file
-    numCSV = len(glob.glob(logs_dir_path, "*.csv"))
-    assert numCSV == 1
+    # Assert that only one CSV file
+    csv_files = glob.glob(logs_dir_path + "*.csv")
+    num_csv = len(csv_files)
+    assert num_csv == 1
 
-    # @TODO: read in a CSV of form: "logfile, date_captured, vehicle, location, notes"
+    # Read in a CSV of form: "logfile, date_captured, vehicle, location, notes"
     log_data = []
-    for file in os.listdir(logs_dir_path):
-        if file.endswith(".csv"):
-            with open(logs_dir_path + file) as csv_file:
-                csv_reader = csv.reader(csv_file, delimiter=',')
-                line_number = 0
-                for row in csv_reader:
-                    if line_number != 0:
-                        numLogFile = len(glob.glob(logs_dir_path, row[0]))
-                        assert numLogFile == 1
+    with open(csv_files[0]) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        row_number = 0
+        # Go through each row
+        for row in csv_reader:
+            # If not on row 0 (column names), read in data
+            if row_number != 0:
 
-                        token = create_token()
-                        csv_row_dict = {"token": token, "logfile": row[0], "vehicle": row[2], "date_captured": row[1],
-                                        "location": row[3]}
+                # Make sure all the logfiles in the CSV file correspond to actual log files
+                # in the directory
+                num_log_file = len(glob.glob(logs_dir_path + row[0]))
+                assert num_log_file == 1
 
-                        log_data.append(csv_row_dict)
-                    line_number = line_number + 1
+                # Use create_token() to create the token
+                token = create_token()
 
-    # @TODO: make sure all the logfiles in the CSV file correspond to actual log files
-    # in the directory
+                # Save a list of dictionaries
+                csv_row_dict = {"token": token, "logfile": row[0], "vehicle": row[2], "date_captured": row[1],
+                                    "location": row[3]}
+                log_data.append(csv_row_dict)
 
-    # @TODO: save a list of dictionaries of form:
-    # @TODO: use create_token() to create the token
-    # {
-    # "token": "53cf9c55dd8644bea67b9f009fc1ee38", # this needs to be generated
-    # "logfile": "n008-2018-08-01-15-16-36-0400",
-    # "vehicle": "n008", # an identifier for the boat used
-    # "date_captured": "2018-08-01",
-    # "location": "music-pond"
-    # },
+            row_number = row_number + 1
 
+    write_json(log_data, logs_dir_path)
     return log_data
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    get_logs(r"C:\Users\Patrick\Downloads\logs\logs\\")
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
