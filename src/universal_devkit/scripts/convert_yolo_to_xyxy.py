@@ -1,14 +1,15 @@
 """Converts a directory of YOLO formatted data to XYXY format.
 """
+import argparse
+import glob
+import json
 import os
+import shutil
+from pathlib import Path
+
+import cv2
 import numpy as np
 from bbox_utils import BoundingBox
-import glob
-from pathlib import Path
-import argparse
-import shutil
-import cv2
-import json
 from tqdm import tqdm
 
 

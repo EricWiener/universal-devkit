@@ -40,10 +40,12 @@ def get_existing_token(data_list, json_path, match_key, token_key):
     """Takes a list of dictionaries and tries to assign the [token_key]
     value passed on matching existing data in the JSON file using the [match_key].
 
-    For example, you can use this to find the sensor tokens to use for the calibrated sensor data.
+    For example, you can use this to find the sensor tokens
+    to use for the calibrated sensor data.
 
     Args:
-        data_list (list(dict)): list of dictionaries to add the keys to. Will modify this list
+        data_list (list(dict)): list of dictionaries to add
+            the keys to. Will modify this list
         json_path (str): path to the JSON file
         match_key (str): the key to use to match up values
         token_key (str): the key the matched token should be stored to

@@ -1,7 +1,7 @@
-import uuid
-from pathlib import Path
 import os
-from .utils import read_json, get_existing_token, remove_key_from_dicts
+from pathlib import Path
+
+from .utils import get_existing_token, read_json, remove_key_from_dicts
 
 
 def validate_calibration_data(data):
@@ -17,10 +17,20 @@ def validate_calibration_data(data):
     return True
 
 
+def get_sensor_path(sensor_path):
+    """Gets the path to look for a sensor JSON file
+
+    Args:
+        sensor_path (str): the directory to look in
+
+    Returns:
+        str: the full path to the sensor JSON file
+    """
+    return os.path.join(sensor_path, "calibrated_sensor.json")
+
+
 def get_calibration_data(sensor_path):
-    get_calib_path = lambda sensor_path: os.path.join(
-        sensor_path, "calibrated_sensor.json"
-    )
+    get_calib_path = get_sensor_path(sensor_path)
 
     data = read_json(get_calib_path(sensor_path))
 
