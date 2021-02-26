@@ -1,5 +1,9 @@
-.. image:: https://img.shields.io/cirrus/github/EricWiener/universal-devkit?style=for-the-badge   :alt: Cirrus CI - Base Branch Build Status
-.. image:: https://img.shields.io/coveralls/github/EricWiener/universal-devkit?style=for-the-badge   :alt: Coveralls github
+.. image:: https://img.shields.io/cirrus/github/EricWiener/universal-devkit?style=for-the-badge
+    :alt: Cirrus CI - Base Branch Build Status
+    :target: https://cirrus-ci.com/github/EricWiener/universal-devkit
+.. image:: https://img.shields.io/coveralls/github/EricWiener/universal-devkit?style=for-the-badge
+    :alt: Coveralls
+    :target: https://coveralls.io/github/EricWiener/universal-devkit
 
 ================
 universal-devkit
