@@ -1,6 +1,5 @@
 import argparse
 import csv
-import uuid
 import json
 
 
@@ -13,10 +12,10 @@ def main(csv_in, json_out):
     """
     data_list = list(csv.DictReader(open(csv_in)))
 
-    for obj in data_list:
-        if token not in obj:
-            # Avoid overwriting existing tokens
-            obj["token"] = uuid.uuid4().hex
+    # for obj in data_list:
+    #     if token not in obj:
+    #         # Avoid overwriting existing tokens
+    #         obj["token"] = uuid.uuid4().hex
 
     with open(json_out, "w") as f:
         json.dump(data_list, f)

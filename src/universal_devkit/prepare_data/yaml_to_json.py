@@ -2,18 +2,20 @@
 
 Example:
 ```
-$ python3 yaml_to_json.py -i "/home/uma/UMA/Bags/raise-the-flag/raise-the-flag_imu.bag" \
+$ python3 yaml_to_json.py -i \
+    "/home/uma/UMA/Bags/raise-the-flag/raise-the-flag_imu.bag" \
     -t "/imu/data/raw" -o output
 ```
 """
-import yaml
-import json
-import subprocess
 import argparse
+import json
 import os
-from pathlib import Path
 import shutil
+import subprocess
 import time
+from pathlib import Path
+
+import yaml
 
 
 def get_timestamp(imu_dict):
@@ -46,8 +48,10 @@ def main(bag_path, topic, output_path):
 
     print("Converting ROS bag to YAML file...")
     with open("imu.yaml", "w") as f:
-        # Note that subprocess.run(["rostopic", "echo", "-b", bag_path, topic, ">", "output.yaml"])
-        # does not work. You need an actual shell in order to pipe a file. subprocess.run()
+        # Note that subprocess.run(["rostopic", "echo", "-b", bag_path,
+        # topic, ">", "output.yaml"])
+        # does not work. You need an actual shell in order to pipe a file.
+        # subprocess.run()
         # by default does not use an actual shell because this is not secure.
         # See: https://stackoverflow.com/a/4856684/6942666
         # rostopic echo -b raise-the-flag_imu.bag /imu/data/raw > imu.yaml
@@ -67,7 +71,7 @@ def main(bag_path, topic, output_path):
         for imu_dict in imu_dicts:
             try:
                 timestamp = get_timestamp(imu_dict)
-            except:
+            except Exception:
                 # Sometimes the last entry might be None
                 # Timed the difference between having an if-statement
                 # to check the imu_dict vs. using try-except to catch
@@ -84,9 +88,8 @@ def main(bag_path, topic, output_path):
     # Clean up after ourselves
     os.remove("imu.yaml")
 
-    print(
-        "Finished converting bag in {0:0.1f} seconds".format(time.time() - start_time)
-    )
+    total_time = time.time() - start_time
+    print("Finished converting bag in {0:0.1f} seconds".format(total_time))
 
 
 if __name__ == "__main__":

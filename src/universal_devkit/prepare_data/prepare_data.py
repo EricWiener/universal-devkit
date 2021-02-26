@@ -1,8 +1,7 @@
 import argparse
-import uuid
-import json
-from pathlib import Path
 import os
+from pathlib import Path
+
 from .get_sensors import get_sensor_calibrations
 from .utils import write_json
 
@@ -28,13 +27,13 @@ def main(data_path, out_path):
     Path(OUT_JSON_DIR_PATH).mkdir(parents=True, exist_ok=True)
 
     # Get paths to input data
-    ATTRIBUTE_PATH = os.path.join(data_path, "attribute.json")
-    CATEGORY_PATH = os.path.join(data_path, "category.json")
-    VISIBILITY_PATH = os.path.join(data_path, "visibility.json")
+    # ATTRIBUTE_PATH = os.path.join(data_path, "attribute.json")
+    # CATEGORY_PATH = os.path.join(data_path, "category.json")
+    # VISIBILITY_PATH = os.path.join(data_path, "visibility.json")
     SENSOR_PATH = os.path.join(data_path, "sensor.json")
-    LOG_DIR_PATH = os.path.join(data_path, "logs")
+    # LOG_DIR_PATH = os.path.join(data_path, "logs")
     SAMPLES_DIR_PATH = os.path.join(data_path, "samples")
-    SWEEPS_DIR_PATH = os.path.join(data_path, "sweeps")
+    # SWEEPS_DIR_PATH = os.path.join(data_path, "sweeps")
 
     # Create paths to output data
     CALIBRATION_DATA = os.path.join(OUT_JSON_DIR_PATH, "calibrated_sensor.json")

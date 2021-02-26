@@ -1,5 +1,5 @@
 """
-Script to format annotations from supervisely.io into 
+Script to format annotations from supervisely.io into
 the custom universal format
 
 
@@ -7,9 +7,9 @@ $ python supervisely_3d_to_universal.py -i input_directory -o output_directory
 """
 
 import argparse
-import os
 import json
-import uuid
+import os
+
 from utils import create_token
 
 
