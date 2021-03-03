@@ -124,6 +124,7 @@ class Scene:
             self.SAMPLE_DIR_PATH, self.scene_token, primary_sensor=primary_sensor
         )
 
+        # These dictionaries map sample_data_token -> dictionary on that sample file
         sample_data_keyframes_dict = self.get_sample_data(self.SAMPLE_DIR_PATH, True)
         sample_data_sweeps_dict = self.get_sample_data(self.SWEEP_DIR_PATH, False)
         self.SAMPLE_DATA_DICT = {
@@ -132,9 +133,14 @@ class Scene:
         }
 
         # Get the sample annotations (a list of dictionaries with all the annotations)
-        self.SAMPLE_ANNOTATIONS = get_sample_annotation(
-            input_directory, self.SAMPLE_DATA_DICT
-        )
+        # for each annotation file in self.SAMPLE_DATA_DICT
+        self.SAMPLE_ANNOTATIONS = []
+        for sample_data_token in self.SAMPLE_DATA_DICT:
+            sample_annotations = get_sample_annotation(
+                input_directory,
+                self.SAMPLE_DATA_DICT[sample_data_token],
+            )
+            self.SAMPLE_ANNOTATIONS.append(sample_annotations)
 
         # Get the instance data (a list of dictionaries with each instance of an object)
         # This should be <= the size of self.SAMPLE_ANNOTATIONS

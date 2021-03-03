@@ -2,6 +2,15 @@ from utils import create_token, get_full_path_to_file, read_json
 
 
 def get_sample_annotation(root_data_dir: str, sample_dict: dict):
+    """Gets a list of annotations for a single file
+
+    Args:
+        root_data_dir (str): the path to the root of the data directory
+        sample_dict (dict): a dictionary with data for this specific file
+
+    Returns:
+        list: a list of dictionaries with each annotation
+    """
     full_path = get_full_path_to_file(root_data_dir, sample_dict["filepath"])
     sample_token = sample_dict["token"]
 
