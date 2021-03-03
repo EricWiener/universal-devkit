@@ -1,5 +1,8 @@
 import json
+import os
 import uuid
+from bisect import bisect_left
+from pathlib import Path
 
 
 def read_json(path):
@@ -94,3 +97,117 @@ def remove_key_from_dicts(data_list, key):
     """
     for d in data_list:
         del d[key]
+
+
+def get_all_non_hidden_files(data_directory):
+    visible_files = [
+        file for file in Path(".").iterdir() if not file.name.startswith(".")
+    ]
+
+    return visible_files
+
+
+def get_immediate_directories(directory_path):
+    """Gets the immediate sub-directories within a directory
+
+    Args:
+        directory_path (str): path to the directory
+
+    Returns:
+        list(str): list of sub-directories
+    """
+    p = Path(directory_path)
+    return [f for f in p.iterdir() if f.is_dir() and not f.name.startswith(".")]
+
+
+def convert_list_to_dict(data_list: list, using_key: str):
+    """Converts a list of dictionaries to a dictionary using the value
+    of a specific key in each object as the indentifier
+
+    Args:
+        data_list (list): the list of dictionaries
+        using_key (str): the key to use to identify each dictionary
+
+    Returns:
+        dict: a dictionary form of the list
+    """
+
+    output = {}
+
+    for item in data_list:
+        output[item[using_key]] = item
+
+    return output
+
+
+def get_file_stem_name(file_path: str):
+    """Gets the stem of a file path.
+
+    Example::
+
+        >>> get_file_stem_name("/home/user/Downloads/repo/test.txt")
+        "test"
+
+    Args:
+        file_path (str): the path to extract the stem from
+
+    Returns:
+        str: the stem of the file
+    """
+    return Path(file_path).stem
+
+
+def get_full_path_to_file(root_data_dir: str, relative_file_path: str):
+    """Gets the path to a file given the path to the root data directory
+    and a path relative to the root of the data directory
+
+    Args:
+        root_data_dir (str): the path to the root directory of the dataset
+        relative_file_path (str): a path relative to the root directory of the dataset
+
+    Returns:
+        str: the full path to the file
+    """
+    return os.path.join(root_data_dir, relative_file_path)
+
+
+def get_file_extension(file_path: str):
+    """Gets the extension of a file.
+
+    Example::
+
+        >>> get_file_stem_name("/home/user/Downloads/repo/test.txt")
+        "txt"
+
+    Args:
+        file_path (str): the path to extract the extension from
+
+    Returns:
+        str: the extension of the file
+    """
+    return Path(file_path).suffix
+
+
+def get_closest_match(sorted_list, query_number):
+    """
+    Source: https://stackoverflow.com/a/12141511
+
+    Parameters:
+    - sorted_list: a sorted list of numbers to search through
+    - query_number: the number to search for
+
+    Returns:
+    The closest value in sorted_list to query_number.
+    If two numbers are equally close, return the smallest number.
+    """
+    pos = bisect_left(sorted_list, query_number)
+    if pos == 0:
+        return sorted_list[0]
+    if pos == len(sorted_list):
+        return sorted_list[-1]
+    before = sorted_list[pos - 1]
+    after = sorted_list[pos]
+    if after - query_number < query_number - before:
+        return after
+    else:
+        return before

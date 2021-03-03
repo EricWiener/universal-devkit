@@ -25,11 +25,12 @@ Create an environment
 Before you start coding we recommend to install Miniconda_ which allows
 to setup a dedicated development environment named ``universal-devkit`` with::
 
-   conda create -n universal-devkit python=3 pyscaffold tox
+   conda create -n universal-devkit python=3
 
 Then activate the environment ``universal-devkit`` with::
 
    conda activate universal-devkit
+   conda install -c conda-forge pyscaffold tox
 
 Clone the repository
 --------------------
@@ -54,7 +55,6 @@ Clone the repository
 
 #. Install ``pre-commit``::
 
-    pip install pre-commit
     pre-commit install
 
    The universal-devkit project comes with a lot of hooks configured to
