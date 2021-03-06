@@ -8,8 +8,7 @@ from shutil import copyfile
 
 
 def main(input_directory, output_directory, ext_type):
-    if not os.path.exists(output_directory):
-        Path.mkdir(output_directory, parents=False, exist_ok=False)
+    Path.mkdir(output_directory, parents=True, exist_ok=True)
 
     for filename in os.listdir(input_directory):
         base = os.path.splitext(filename)[0]

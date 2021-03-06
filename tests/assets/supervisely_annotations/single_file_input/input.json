@@ -1,0 +1,174 @@
+{
+    "description": "",
+    "key": "0c030bf9fab748548f366dbe49643080",
+    "tags": [],
+    "objects": [
+        {
+            "key": "326d8434c93845188296d6e68a35dc43",
+            "classTitle": "dock",
+            "tags": [],
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-11-14T21:56:50.178Z",
+            "createdAt": "2020-11-14T21:56:50.178Z"
+        },
+        {
+            "key": "534f02658e054bfba92ebaf0e10fe28f",
+            "classTitle": "buoy",
+            "tags": [],
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:13:53.588Z",
+            "createdAt": "2020-12-19T21:13:53.588Z"
+        },
+        {
+            "key": "cbd989792c564f97ac79fd453ac04b3e",
+            "classTitle": "buoy",
+            "tags": [],
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:13:58.319Z",
+            "createdAt": "2020-12-19T21:13:58.319Z"
+        },
+        {
+            "key": "13e190f7f9d141bbbdee19ea144fab57",
+            "classTitle": "buoy",
+            "tags": [],
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:14:00.608Z",
+            "createdAt": "2020-12-19T21:14:00.608Z"
+        },
+        {
+            "key": "b0517757dbc94d338df17e252c66e6e3",
+            "classTitle": "buoy",
+            "tags": [],
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:14:06.262Z",
+            "createdAt": "2020-12-19T21:14:06.262Z"
+        }
+    ],
+    "figures": [
+        {
+            "key": "9fe84491018c44d487bc41a37188da18",
+            "objectKey": "326d8434c93845188296d6e68a35dc43",
+            "geometryType": "cuboid_3d",
+            "geometry": {
+                "position": {
+                    "x": 6.536307742091793,
+                    "y": -2.1117338632172125,
+                    "z": 0.6549238563313258
+                },
+                "rotation": {
+                    "x": -0.08282295820270243,
+                    "y": -0.10018696688968483,
+                    "z": -0.6927483959297558
+                },
+                "dimensions": {
+                    "x": 2.3551822605229615,
+                    "y": 2.075954356460532,
+                    "z": 0.7333401523302493
+                }
+            },
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-11-14T21:59:46.346Z",
+            "createdAt": "2020-11-14T21:59:29.181Z"
+        },
+        {
+            "key": "c76fc5e6e70f47539d7b404a6c230e51",
+            "objectKey": "534f02658e054bfba92ebaf0e10fe28f",
+            "geometryType": "cuboid_3d",
+            "geometry": {
+                "position": {
+                    "x": 12.888696999864951,
+                    "y": 8.791818822772989,
+                    "z": 1.919918825831921
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "dimensions": {
+                    "x": 0.9620308104717156,
+                    "y": 0.9620308104717156,
+                    "z": 0.9620308104717156
+                }
+            },
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:13:53.844Z",
+            "createdAt": "2020-12-19T21:13:53.844Z"
+        },
+        {
+            "key": "2f6a90373c694c42b59a746a87ab0dff",
+            "objectKey": "cbd989792c564f97ac79fd453ac04b3e",
+            "geometryType": "cuboid_3d",
+            "geometry": {
+                "position": {
+                    "x": 1.2572527985089899,
+                    "y": -22.348783473854795,
+                    "z": 0.46110070685790916
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "dimensions": {
+                    "x": 1.709071875968703,
+                    "y": 1.709071875968703,
+                    "z": 1.709071875968703
+                }
+            },
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:13:58.599Z",
+            "createdAt": "2020-12-19T21:13:58.599Z"
+        },
+        {
+            "key": "b9957e22ea124602bf339e1247389674",
+            "objectKey": "13e190f7f9d141bbbdee19ea144fab57",
+            "geometryType": "cuboid_3d",
+            "geometry": {
+                "position": {
+                    "x": 19.0478868666901,
+                    "y": -34.47241489457224,
+                    "z": 2.030176052132429
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "dimensions": {
+                    "x": 2.1585361619829824,
+                    "y": 2.1585361619829824,
+                    "z": 2.1585361619829824
+                }
+            },
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:14:00.845Z",
+            "createdAt": "2020-12-19T21:14:00.845Z"
+        },
+        {
+            "key": "6bba008f035c462ba7684d1275b09dde",
+            "objectKey": "b0517757dbc94d338df17e252c66e6e3",
+            "geometryType": "cuboid_3d",
+            "geometry": {
+                "position": {
+                    "x": 0.648870217371158,
+                    "y": 1.3465072477962536,
+                    "z": -0.06855247579808221
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "dimensions": {
+                    "x": 1.3533348451645724,
+                    "y": 1.3533348451645724,
+                    "z": 1.3533348451645724
+                }
+            },
+            "labelerLogin": "leshlu",
+            "updatedAt": "2020-12-19T21:14:06.528Z",
+            "createdAt": "2020-12-19T21:14:06.528Z"
+        }
+    ]
+}

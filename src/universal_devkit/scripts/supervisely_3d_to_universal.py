@@ -9,13 +9,13 @@ $ python supervisely_3d_to_universal.py -i input_directory -o output_directory
 import argparse
 import json
 import os
+from pathlib import Path
 
-from utils import create_token
+from universal_devkit.utils import create_token
 
 
-def main(input_directory, output_directory):
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
+def convert_supervisely_3d_to_universal(input_directory, output_directory):
+    Path.mkdir(output_directory, parents=True, exist_ok=True)
 
     for filename in os.listdir(input_directory):
         with open(os.path.join(input_directory, filename)) as f:
@@ -70,4 +70,4 @@ if __name__ == "__main__":
     )
     ap.add_argument("-i", "--input", type=str, help="The input directory")
     args = vars(ap.parse_args())
-    main(args["input"], args["output"])
+    convert_supervisely_3d_to_universal(args["input"], args["output"])
