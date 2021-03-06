@@ -1,6 +1,6 @@
 from create_logs_json import get_logs
 
-def create_logs_json_test(logs_dir_path):
+def test_create_logs_json(logs_dir_path):
     correct_output = []
 
     # Row 1
