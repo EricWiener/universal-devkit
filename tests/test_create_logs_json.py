@@ -1,6 +1,6 @@
-from create_logs_json import get_logs
+from universal_devkit.prepare_data.create_logs_json import get_logs
 
-def test_create_logs_json(logs_dir_path):
+def test_create_logs_json():
     correct_output = []
 
     # Row 1
@@ -39,7 +39,7 @@ def test_create_logs_json(logs_dir_path):
                 }
     correct_output.append(temp_row)
 
-    output = get_logs(logs_dir_path)
+    output = get_logs("assets/example_logs")
 
     # Assert get_logs gave correct output (excluding "token")
     for row in range(4):
