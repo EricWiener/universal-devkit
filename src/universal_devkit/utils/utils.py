@@ -99,10 +99,11 @@ def remove_key_from_dicts(data_list, key):
         del d[key]
 
 
-def get_all_non_hidden_files(data_directory):
-    visible_files = [
-        file for file in Path(".").iterdir() if not file.name.startswith(".")
-    ]
+def get_all_non_hidden_files(data_directory, exclude=[]):
+    visible_files = []
+    for file in Path(data_directory).iterdir():
+        if not file.name.startswith(".") and file.name not in exclude:
+            visible_files.append(file)
 
     return visible_files
 
