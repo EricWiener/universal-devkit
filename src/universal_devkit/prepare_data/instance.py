@@ -1,4 +1,4 @@
-def get_instance_data(sample_annotation_data: list(dict)):
+def get_instance_data(sample_annotation_data: list):
     """Gets a dictionary mapping every instance token -> data about it
 
     Args:
