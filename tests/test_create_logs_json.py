@@ -1,7 +1,7 @@
 from universal_devkit.prepare_data.create_logs_json import get_logs
 import shutil
 from pathlib import Path
-from universal_devkit.utils import read_json
+from universal_devkit.prepare_data.utils import read_json
 
 def get_relative_path(relative_file_path):
     return Path(__file__).parent / relative_file_path
