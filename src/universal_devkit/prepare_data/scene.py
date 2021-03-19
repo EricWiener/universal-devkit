@@ -18,7 +18,7 @@ class Scene:
     def __init__(
         self,
         input_directory,
-        scene_token,
+        scene_token=None,
         sensor_json_path=None,
         primary_sensor="LIDAR_TOP",
     ):
@@ -76,6 +76,7 @@ class Scene:
         self.SWEEP_DIR_PATH = os.path.join(input_directory, "sweeps")
         self.SAMPLE_DIR_PATH = os.path.join(input_directory, "samples")
         self.SCENE_TOKEN = scene_token if scene_token else create_token()
+        self.primary_sensor = primary_sensor
 
         assert os.path.exists(self.SWEEP_DIR_PATH), "Unable to locate sweeps directory"
         assert os.path.exists(self.SAMPLE_DIR_PATH), "Unable to locate sample directory"
@@ -121,7 +122,7 @@ class Scene:
         #   "scene_token": "cc8c0bf57f984915a77078b10eb33198"
         # },
         self.SAMPLE_DICT, self.SAMPLE_TIMESTAMPS = get_sample_json(
-            self.SAMPLE_DIR_PATH, self.scene_token, primary_sensor=primary_sensor
+            self.SAMPLE_DIR_PATH, self.SCENE_TOKEN, primary_sensor=primary_sensor
         )
 
         # These dictionaries map sample_data_token -> dictionary on that sample file
@@ -147,11 +148,22 @@ class Scene:
         self.INSTANCE_DATA_DICT = get_instance_data(self.SAMPLE_ANNOTATIONS)
 
     def get_sample_data(self, directory_path: str, is_key_frame: bool):
+        """Gets a dictionary with information on each of the samples
+
+        Args:
+            directory_path (str): sample directory
+            is_key_frame (bool): whether the frame is a keyframe
+
+        Returns:
+            tuple(dict, list): a dictionary of timestamps -> sample dicts,
+                a list of sorted timestamps
+        """
+
         # Dictionary of annotation_token -> annotation dict
         annotations = {}
 
         for sensor in self.SENSOR_CALIBRATION_DICT:
-            sensor_dir = os.path.join(directory_path)
+            sensor_dir = os.path.join(directory_path, sensor)
             calibrated_sensor_token = self.SENSOR_CALIBRATION_DICT[sensor]["token"]
 
             # Store a dict with per sensor annotations to use for specifying
@@ -159,7 +171,17 @@ class Scene:
             # timestamp -> annotation token
             sensor_annotations = {}
 
-            files = get_all_non_hidden_files(sensor_dir)
+            timestamps = list(sensor_annotations.keys())
+            timestamps.sort()
+
+            files = get_all_non_hidden_files(
+                sensor_dir, exclude=["calibrated_sensor.json"]
+            )
+
+            if len(files) < 2:
+                # Require at least 2 timestamps
+                print("Not enough data for sensor: {}. Skipping".format(self.primary_sensor))
+                return sensor_annotations, timestamps
 
             for file in files:
                 file_stem = get_file_stem_name(file)
@@ -174,8 +196,6 @@ class Scene:
                 sensor_annotations[timestamp] = annotation["token"]
 
             # Add prev and next
-            timestamps = sensor_annotations.keys()
-            timestamps.sort()
 
             for i in range(1, len(timestamps) - 1):
                 timestamp = timestamps[i]
@@ -223,13 +243,21 @@ class Scene:
         return annotation
 
 
-def main():
-    pass
+def main(input_directory, output_directory):
+    _ = Scene(input_directory)
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("-i", "--input", type=str, help="The path to the input directory")
-    ap.add_argument("-o", "--output", type=str, help="The path to the output directory")
+    ap.add_argument(
+        "-i", "--input", type=str, required=True, help="The path to the input directory"
+    )
+    ap.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        required=True,
+        help="The path to the output directory",
+    )
     args = vars(ap.parse_args())
     main(args["input"], args["output"])
