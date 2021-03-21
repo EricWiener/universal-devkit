@@ -1,4 +1,28 @@
-from universal_devkit.utils.utils import convert_list_to_dict, create_token, read_json
+from universal_devkit.utils.utils import (
+    convert_list_to_dict,
+    create_token,
+    get_closest_match,
+    read_json,
+)
+
+
+class EgoPoseData:
+    def __init__(self, ego_pose_json_path):
+        self.timestamps_to_pose, self.timestamps = get_ego_pose_data(ego_pose_json_path)
+
+    def get_closest_pose_token(self, timestamp):
+        """Gets the closest ego pose for a certain timestamp
+
+        Args:
+            timestamp (int): the timestamp in nanoseconds
+
+        Returns:
+            str: the UUID token for the closest ego pose
+        """
+        closest_ego_timestamp = get_closest_match(self.timestamps, timestamp)
+        ego_token = self.timestamps_to_pose[closest_ego_timestamp]["token"]
+
+        return ego_token
 
 
 def validate_ego_pose(ego_pose_list):
