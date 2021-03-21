@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from constants import Constants
+
 from universal_devkit.utils.utils import (
     get_existing_token,
     read_json,
@@ -30,7 +32,7 @@ def get_sensor_path(sensor_path):
     Returns:
         str: the full path to the sensor JSON file
     """
-    return os.path.join(sensor_path, "calibrated_sensor.json")
+    return os.path.join(sensor_path, Constants.sensor_calibration_file_name)
 
 
 def get_calibration_data(sensor_path):

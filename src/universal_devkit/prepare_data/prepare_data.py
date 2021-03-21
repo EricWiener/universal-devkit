@@ -2,6 +2,8 @@ import argparse
 import os
 from pathlib import Path
 
+from constants import Constants
+
 from universal_devkit.utils.utils import write_json
 
 from .get_sensors import get_sensor_calibrations
@@ -37,7 +39,9 @@ def main(data_path, out_path):
     # SWEEPS_DIR_PATH = os.path.join(data_path, "sweeps")
 
     # Create paths to output data
-    CALIBRATION_DATA = os.path.join(OUT_JSON_DIR_PATH, "calibrated_sensor.json")
+    CALIBRATION_DATA = os.path.join(
+        OUT_JSON_DIR_PATH, Constants.sensor_calibration_file_name
+    )
 
     # Get the sensor calibration
     calibration_data = get_sensor_calibrations(SAMPLES_DIR_PATH, SENSOR_PATH)

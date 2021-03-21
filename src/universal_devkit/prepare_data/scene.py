@@ -1,6 +1,7 @@
 import argparse
 import os
 
+from constants import Constants
 from ego_pose import get_ego_pose_data
 from instance import get_instance_data
 from sample import get_file_data, get_sample_json
@@ -176,7 +177,7 @@ class Scene:
             timestamps.sort()
 
             files = get_all_non_hidden_files(
-                sensor_dir, exclude=["calibrated_sensor.json"]
+                sensor_dir, exclude=[Constants.sensor_calibration_file_name]
             )
 
             if len(files) < 2:

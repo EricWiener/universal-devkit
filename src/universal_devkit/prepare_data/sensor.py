@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from constants import Constants
+
 from universal_devkit.utils.utils import (
     convert_list_to_dict,
     create_token,
@@ -38,7 +40,7 @@ def get_sensor_calibration(sample_dir_path, sensor_json_dict):
     # sensor_channel will be something like "LIDAR_TOP", "RADAR_FRONT_RIGHT", etc.
     for sensor_channel in sensor_json_dict:
         calib_file = os.path.join(
-            sample_dir_path, sensor_channel, "calibrated_sensor.json"
+            sample_dir_path, sensor_channel, Constants.sensor_calibration_file_name
         )
 
         if not os.path.exists(calib_file):
