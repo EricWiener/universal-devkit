@@ -180,7 +180,11 @@ class Scene:
 
             if len(files) < 2:
                 # Require at least 2 timestamps
-                print("Not enough data for sensor: {}. Skipping".format(self.primary_sensor))
+                print(
+                    "Not enough data for sensor: {}. Skipping".format(
+                        self.primary_sensor
+                    )
+                )
                 return sensor_annotations, timestamps
 
             for file in files:
