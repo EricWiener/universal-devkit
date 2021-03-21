@@ -83,28 +83,39 @@ class Scene:
         assert os.path.exists(self.SWEEP_DIR_PATH), "Unable to locate sweeps directory"
         assert os.path.exists(self.SAMPLE_DIR_PATH), "Unable to locate sample directory"
 
-        # The sensor tokens should remain the same for different scenes
-        # Dictionary mapping sensor channel -> sensor info
-        # Ex: "CAM_FRONT_RIGHT" -> {
-        #   "token": "2f7ad058f1ac5557bf321c7543758f43",
-        #   "channel": "CAM_FRONT_RIGHT",
-        #   "modality": "camera"
-        # }
+        """
+        The sensor tokens should remain the same for different scenes
+        Dictionary mapping sensor channel -> sensor info
+
+        Ex:
+        ```
+        "CAM_FRONT_RIGHT" -> {
+            "token": "2f7ad058f1ac5557bf321c7543758f43",
+            "channel": "CAM_FRONT_RIGHT",
+            "modality": "camera"
+        }
+        ```
+        """
         self.SENSOR_JSON_DICT = get_sensor_json(
             self.SAMPLE_DIR_PATH, sensor_json_path=sensor_json_path
         )
 
-        # The calibration tokens for a sensor can change for different scenes
-        # Dictionary mapping sensor channel -> calibration data
-        # "CAM_FRONT_RIGHT" -> {
-        #     // changes for a specific sensor per scene
-        #     "token": "f4d2a6c281f34a7eb8bb033d82321f79",
-        #     // same for a specific sensor
-        #     "sensor_token": "47fcd48f71d75e0da5c8c1704a9bfe0a",
-        #     "translation": [...],
-        #     "rotation": [...],
-        #     "camera_intrinsic": [...] // optional
-        # },
+        """
+        The calibration tokens for a sensor can change for different scenes
+        Dictionary mapping sensor channel -> calibration data
+
+        ```
+        "CAM_FRONT_RIGHT" -> {
+            // changes for a specific sensor per scene
+            "token": "f4d2a6c281f34a7eb8bb033d82321f79",
+            // same for a specific sensor
+            "sensor_token": "47fcd48f71d75e0da5c8c1704a9bfe0a",
+            "translation": [...],
+            "rotation": [...],
+            "camera_intrinsic": [...] // optional
+        },
+        ```
+        """
         self.SENSOR_CALIBRATION_DICT = get_sensor_calibration(
             self.SAMPLE_DIR_PATH, self.SENSOR_JSON_DICT
         )
@@ -115,14 +126,19 @@ class Scene:
         assert os.path.exists(ego_pose_path), "Unable to locate ego_pose.json"
         self.EGO_POSE_DICT, self.EGO_POSE_TIMESTAMPS = get_ego_pose_data(ego_pose_path)
 
-        # Get the sample data mapping timestamps -> sample data
-        # 1532402927647951 -> {
-        #   "token": "ca9a282c9e77460f8360f564131a8af5",
-        #   "timestamp": 1532402927647951,
-        #   "prev": "",
-        #   "next": "39586f9d59004284a7114a68825e8eec",
-        #   "scene_token": "cc8c0bf57f984915a77078b10eb33198"
-        # },
+        """
+        Get the sample data mapping timestamps -> sample data
+
+        ```
+        1532402927647951 -> {
+            "token": "ca9a282c9e77460f8360f564131a8af5",
+            "timestamp": 1532402927647951,
+            "prev": "",
+            "next": "39586f9d59004284a7114a68825e8eec",
+            "scene_token": "cc8c0bf57f984915a77078b10eb33198"
+        },
+        ```
+        """
         self.SAMPLE_DICT, self.SAMPLE_TIMESTAMPS = get_sample_json(
             self.SAMPLE_DIR_PATH, self.SCENE_TOKEN, primary_sensor=primary_sensor
         )
