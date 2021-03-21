@@ -1,7 +1,11 @@
 import os
 from pathlib import Path
 
-from .utils import get_existing_token, read_json, remove_key_from_dicts
+from universal_devkit.utils.utils import (
+    get_existing_token,
+    read_json,
+    remove_key_from_dicts,
+)
 
 
 def validate_calibration_data(data):

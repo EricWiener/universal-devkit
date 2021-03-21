@@ -1,4 +1,4 @@
-from utils import convert_list_to_dict, create_token, read_json
+from universal_devkit.utils.utils import convert_list_to_dict, create_token, read_json
 
 
 def validate_ego_pose(ego_pose_list):

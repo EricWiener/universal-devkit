@@ -6,7 +6,8 @@ from instance import get_instance_data
 from sample import get_file_data, get_sample_json
 from sample_annotation import get_sample_annotation
 from sensor import get_sensor_calibration, get_sensor_json
-from utils import (
+
+from universal_devkit.utils.utils import (
     create_token,
     get_all_non_hidden_files,
     get_closest_match,

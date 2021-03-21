@@ -1,7 +1,7 @@
 import csv
 import glob
 
-from utils import create_token, write_json
+from universal_devkit.utils.utils import create_token, write_json
 
 
 def get_logs(logs_dir_path):

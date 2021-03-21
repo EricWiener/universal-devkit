@@ -2,8 +2,9 @@ import argparse
 import os
 from pathlib import Path
 
+from universal_devkit.utils.utils import write_json
+
 from .get_sensors import get_sensor_calibrations
-from .utils import write_json
 
 
 def main(data_path, out_path):

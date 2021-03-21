@@ -1,4 +1,4 @@
-from utils import create_token, get_full_path_to_file, read_json
+from universal_devkit.utils.utils import create_token, get_full_path_to_file, read_json
 
 
 def get_sample_annotation(root_data_dir: str, sample_dict: dict):

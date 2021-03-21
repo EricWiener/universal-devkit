@@ -1,7 +1,8 @@
 import os
 
 from image_utils import get_image_dimensions
-from utils import (
+
+from universal_devkit.utils.utils import (
     create_token,
     get_all_non_hidden_files,
     get_file_extension,
