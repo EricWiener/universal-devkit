@@ -18,7 +18,9 @@
 
 4.  Collect all sample data files.
 
-    - Use the primary sensor to decide what constitutes a sample.
+    - First get data on all the sample files (this will be sample_data.json, but we
+      don't have the sample_token yet).
+    - Then use the primary sensor to decide what constitutes a sample.
     - Non-primary sensors should be matched to the nearest sample timestamp (using sample_token)
     - A non-primary sensor can have a many-to-one matching with the primary sensor.
       For instance, if a camera can take 8 pictures in the time for a full lidar scan to

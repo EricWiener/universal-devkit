@@ -1,19 +1,14 @@
 import argparse
 import os
 
-from constants import Constants
-from ego_pose import get_ego_pose_data
+from ego_pose import EgoPoseData
 from instance import get_instance_data
-from sample import get_file_data, get_sample_json
+from sample import Sample
 from sample_annotation import get_sample_annotation
+from sample_data import SampleData
 from sensor import get_sensor_calibration, get_sensor_json
 
-from universal_devkit.utils.utils import (
-    create_token,
-    get_all_non_hidden_files,
-    get_closest_match,
-    get_file_stem_name,
-)
+from universal_devkit.utils.utils import create_token
 
 
 class Scene:
@@ -124,10 +119,13 @@ class Scene:
         # self.EGO_POSE_DICT maps timestamps -> ego pose dicts
         ego_pose_path = os.path.join(input_directory, "ego_pose.json")
         assert os.path.exists(ego_pose_path), "Unable to locate ego_pose.json"
-        self.EGO_POSE_DICT, self.EGO_POSE_TIMESTAMPS = get_ego_pose_data(ego_pose_path)
+        self.ego_pose_data = EgoPoseData(ego_pose_path)
 
         """
-        Get the sample data mapping timestamps -> sample data
+        Get info on each sample mapping timestamps -> sample data
+
+        This uses the timestamps of the primary sensor when deciding
+        the timestamps of each sample.
 
         ```
         1532402927647951 -> {
@@ -139,13 +137,19 @@ class Scene:
         },
         ```
         """
-        self.SAMPLE_DICT, self.SAMPLE_TIMESTAMPS = get_sample_json(
+        self.sample = Sample(
             self.SAMPLE_DIR_PATH, self.SCENE_TOKEN, primary_sensor=primary_sensor
         )
 
+        self.sample_data = SampleData(self.ego_pose_data, self.sample)
+
         # These dictionaries map sample_data_token -> dictionary on that sample file
-        sample_data_keyframes_dict = self.get_sample_data(self.SAMPLE_DIR_PATH, True)
-        sample_data_sweeps_dict = self.get_sample_data(self.SWEEP_DIR_PATH, False)
+        sample_data_keyframes_dict = self.sample_data.get_sample_data(
+            self.SAMPLE_DIR_PATH, True
+        )
+        sample_data_sweeps_dict = self.sample_data.get_sample_data(
+            self.SWEEP_DIR_PATH, False
+        )
         self.SAMPLE_DATA_DICT = {
             **sample_data_keyframes_dict,
             **sample_data_sweeps_dict,
@@ -164,105 +168,6 @@ class Scene:
         # Get the instance data (a list of dictionaries with each instance of an object)
         # This should be <= the size of self.SAMPLE_ANNOTATIONS
         self.INSTANCE_DATA_DICT = get_instance_data(self.SAMPLE_ANNOTATIONS)
-
-    def get_sample_data(self, directory_path: str, is_key_frame: bool):
-        """Gets a dictionary with information on each of the samples
-
-        Args:
-            directory_path (str): sample directory
-            is_key_frame (bool): whether the frame is a keyframe
-
-        Returns:
-            tuple(dict, list): a dictionary of timestamps -> sample dicts,
-                a list of sorted timestamps
-        """
-
-        # Dictionary of annotation_token -> annotation dict
-        annotations = {}
-
-        for sensor in self.SENSOR_CALIBRATION_DICT:
-            sensor_dir = os.path.join(directory_path, sensor)
-            calibrated_sensor_token = self.SENSOR_CALIBRATION_DICT[sensor]["token"]
-
-            # Store a dict with per sensor annotations to use for specifying
-            # the prev and next tokens
-            # timestamp -> annotation token
-            sensor_annotations = {}
-
-            timestamps = list(sensor_annotations.keys())
-            timestamps.sort()
-
-            files = get_all_non_hidden_files(
-                sensor_dir, exclude=[Constants.sensor_calibration_file_name]
-            )
-
-            if len(files) < 2:
-                # Require at least 2 timestamps
-                print(
-                    "Not enough data for sensor: {}. Skipping".format(
-                        self.primary_sensor
-                    )
-                )
-                return sensor_annotations, timestamps
-
-            for file in files:
-                file_stem = get_file_stem_name(file)
-                timestamp = int(file_stem)
-
-                # @TODO: this should be the full file path being passed
-                # not the file name
-                annotation = self.get_sample_data_for_file(
-                    file, timestamp, calibrated_sensor_token, is_key_frame
-                )
-                annotations[annotation["token"]] = annotation
-                sensor_annotations[timestamp] = annotation["token"]
-
-            # Add prev and next
-
-            for i in range(1, len(timestamps) - 1):
-                timestamp = timestamps[i]
-                ann_token = sensor_annotations[timestamp]
-                annotations[ann_token]["prev"] = sensor_annotations[timestamps[i - 1]]
-                annotations[ann_token]["next"] = sensor_annotations[timestamps[i + 1]]
-
-            # Handle the first and last
-            first_ann_token = sensor_annotations[timestamps[0]]
-            annotations[first_ann_token]["next"] = sensor_annotations[timestamps[1]]
-
-            last_ann_token = sensor_annotations[timestamps[-1]]
-            annotations[last_ann_token]["prev"] = sensor_annotations[timestamps[-2]]
-
-        return annotations
-
-    def get_sample_data_for_file(
-        self, file_path, timestamp, calibrated_sensor_token, is_key_frame
-    ):
-        # Get the sample token
-        closest_sample_timestamp = get_closest_match(self.SAMPLE_TIMESTAMPS, timestamp)
-        sample_token = self.SAMPLE_DICT[closest_sample_timestamp]["token"]
-
-        # Get the ego token
-        closest_ego_timestamp = get_closest_match(self.EGO_POSE_TIMESTAMPS, timestamp)
-        ego_token = self.EGO_POSE_DICT[closest_ego_timestamp]["token"]
-
-        annotation = {
-            "token": create_token(),
-            "sample_token": sample_token,
-            "ego_pose_token": ego_token,
-            "calibrated_sensor_token": calibrated_sensor_token,
-            "timestamp": timestamp,
-            "is_key_frame": is_key_frame,
-            # @TODO: this should be relative to the data directory
-            "filename": file_path,
-            "prev": "",
-            "next": "",
-        }
-
-        # @TODO: this should be the full file path being passed
-        # not the file name
-        annotation = {**annotation, **get_file_data(file_path)}
-
-        return annotation
 
 
 def main(input_directory, output_directory):

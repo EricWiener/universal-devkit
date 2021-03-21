@@ -158,6 +158,21 @@ def get_file_stem_name(file_path: str):
     return Path(file_path).stem
 
 
+def get_timestamp_from_file_path(file_path: str):
+    """Gets the int timestamp from a file's name
+
+    Args:
+        file_path (str): path to a file
+
+    Returns:
+        int: the timestamp of the file as an int
+    """
+    file_stem = get_file_stem_name(file_path)
+    timestamp = int(file_stem)
+
+    return timestamp
+
+
 def get_full_path_to_file(root_data_dir: str, relative_file_path: str):
     """Gets the path to a file given the path to the root data directory
     and a path relative to the root of the data directory
@@ -212,3 +227,54 @@ def get_closest_match(sorted_list, query_number):
         return after
     else:
         return before
+
+
+def add_key_to_dicts(list_of_dicts: list, key: any, value: any):
+    """Adds a (key, value) pair to every dictionary in a list
+    of dictionaries.
+
+    Args:
+        list_of_dicts (list): list of dictionaries
+        key (any): key to add
+        value (any): value to add
+    """
+    for d in list_of_dicts:
+        d[key] = any
+
+
+def add_prev_next_to_list_of_dicts(timestamp_to_obj_dict: dict):
+    """Adds prev and next values to a dictionary mapping timestamps to dicts.
+
+    Will modify the passed in dictionary.
+
+    Args:
+        timestamp_to_obj_dict (dict): a dictionary mapping timestamps to dicts.
+            The keys should be int timestamps.
+
+    Returns:
+        tuple(dict, list): a tuple with the first value as the initial dictionary
+            passed in with prev and next tokens added to each entry.
+
+            The second value is a list of sorted timestamps
+    """
+    assert (
+        len(timestamp_to_obj_dict) >= 2
+    ), "add_prev_next_to_list_of_dicts requires dictionary with >= 2 elements"
+
+    timestamps = timestamp_to_obj_dict.values()
+    timestamps.sort()
+
+    assert isinstance(
+        timestamps[0], int
+    ), "Timestamps should be ints. Received {}".format(type(timestamps[0]))
+
+    for i in range(1, len(timestamps) - 1):
+        timestamp = timestamps[i]
+        timestamp_to_obj_dict[timestamp]["prev"] = timestamps[i - 1]
+        timestamp_to_obj_dict[timestamp]["next"] = timestamps[i + 1]
+
+    # Handle special case of the first and the last
+    timestamp_to_obj_dict[timestamp[0]]["next"] = timestamps[1]
+    timestamp_to_obj_dict[timestamp[-1]]["prev"] = timestamps[-2]
+
+    return timestamp_to_obj_dict, timestamps
