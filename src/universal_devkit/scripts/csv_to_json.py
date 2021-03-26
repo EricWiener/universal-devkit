@@ -15,7 +15,7 @@ def main(csv_in, json_out):
     for obj in data_list:
         if "token" not in obj:
             # Avoid overwriting existing tokens
-            obj["token"] = 100 # FIXXXX!!!!
+            obj["token"] = uuid.uuid4().hex
 
     with open(json_out, "w") as f:
         json.dump(data_list, f)
