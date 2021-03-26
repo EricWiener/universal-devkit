@@ -1,7 +1,7 @@
 import argparse
 import csv
 import json
-
+import uuid
 
 def main(csv_in, json_out):
     """Reads in a CSV file, converts it to a dictionary, and adds tokens
