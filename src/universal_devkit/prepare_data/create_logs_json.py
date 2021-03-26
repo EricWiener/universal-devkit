@@ -1,7 +1,7 @@
 import csv
 import glob
 
-from utils import create_token, write_json
+from universal_devkit.utils.utils import create_token, write_json
 
 
 def get_logs(logs_dir_path):
@@ -15,7 +15,7 @@ def get_logs(logs_dir_path):
     """
 
     # Assert that only one CSV file
-    csv_files = glob.glob(logs_dir_path + "*.csv")
+    csv_files = glob.glob(str(logs_dir_path) + "*.csv")
     num_csv = len(csv_files)
     assert num_csv == 1
 
@@ -51,10 +51,3 @@ def get_logs(logs_dir_path):
 
     write_json(log_data, logs_dir_path)
     return log_data
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == "__main__":
-    get_logs(r"C:\Users\Patrick\Downloads\logs\logs\\")
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
