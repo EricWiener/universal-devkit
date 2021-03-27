@@ -5,7 +5,9 @@ $ python correct_timestamps.py -i input_directory -b bag -o output_directory
 """
 
 import argparse
+import json
 import os
+import shutil
 from pathlib import Path
 
 import rosbag
@@ -37,7 +39,7 @@ def get_timestamp(imu_dict):
 
 
 def correct_timestamps(input_directory, bag_path, output_directory):
-    Path.mkdir(output_directory, parents=True, exist_ok=True)
+    Path.mkdir(Path(output_directory), parents=True, exist_ok=True)
 
     # Read point cloud data from bag.
     input_bag = rosbag.Bag(bag_path)
@@ -48,19 +50,16 @@ def correct_timestamps(input_directory, bag_path, output_directory):
 
     for topic, msg, timestamp in tqdm(input_bag.read_messages()):
 
-        try:
-            json_str = json_message_converter.convert_ros_message_to_json(msg)
-        except Exception:
-            print("Failed to convert msg: ", msg)
-
-        json_dict = eval(json_str)
+        json_str = json_message_converter.convert_ros_message_to_json(msg)
+        json_dict = json.loads(json_str)
         correct_timestamp = get_timestamp(json_dict)
 
         for filename in os.listdir(input_directory):
             filename_no_extension, extension = os.path.splitext(filename)
-            if filename_no_extension == timestamp:
-                Path(os.path.join(input_directory, filename)).rename(
-                    os.path.join(output_directory, correct_timestamp, extension)
+            if str(filename_no_extension) == str(timestamp):
+                shutil.copyfile(
+                    os.path.join(input_directory, filename),
+                    os.path.join(output_directory, correct_timestamp + extension),
                 )
 
 
