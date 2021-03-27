@@ -14,7 +14,7 @@ import rosbag
 from rospy_message_converter import json_message_converter
 from tqdm import tqdm
 
-from universal_devkit.utils import get_timestamp
+from universal_devkit.utils.utils import get_timestamp
 
 
 def correct_timestamps(input_directory, bag_path, output_directory):
