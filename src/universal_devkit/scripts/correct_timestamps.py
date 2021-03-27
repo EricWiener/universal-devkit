@@ -8,6 +8,7 @@ import argparse
 import json
 import os
 import shutil
+from glob import glob
 from pathlib import Path
 
 import rosbag
@@ -33,12 +34,14 @@ def correct_timestamps(input_directory, bag_path, output_directory):
         json_dict = json.loads(json_str)
         correct_timestamp = get_timestamp(json_dict)
 
-        for filename in os.listdir(input_directory):
+        existing_files = glob.glob("{}*".format(timestamp))
+        assert existing_files <= 1
+        if len(existing_files) == 1:
+            filename = existing_files[0]
             filename_no_extension, extension = os.path.splitext(filename)
             input_file = os.path.join(input_directory, filename)
             output_file = os.path.join(output_directory, correct_timestamp + extension)
-            if str(filename_no_extension) == str(timestamp):
-                shutil.copyfile(input_file, output_file)
+            shutil.copyfile(input_file, output_file)
 
 
 if __name__ == "__main__":
