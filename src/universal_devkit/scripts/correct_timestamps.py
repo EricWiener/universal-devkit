@@ -14,28 +14,7 @@ import rosbag
 from rospy_message_converter import json_message_converter
 from tqdm import tqdm
 
-
-def get_timestamp(imu_dict):
-    """The timestamp of a message does not necessarily equal
-    the timestamp in the message's header. The header timestamp
-    is more accurate and the timestamp of the message just corresponds
-    to whenever the bag received the message and saved it.
-
-    Args:
-        imu_dict (dict): dictionary of a single IMU reading
-
-    Returns:
-        str: a string timestamp to use for this IMU message.
-        Uses the header timestamp
-    """
-
-    # We need to convert the seconds to nanoseconds so we can add them
-    # We need to make sure the seconds value is an int, so the output
-    # string isn't formatted with scientific notation
-    seconds = int(imu_dict["header"]["stamp"]["secs"] * 1e9)
-    nanoseconds = imu_dict["header"]["stamp"]["nsecs"]
-    total_time = seconds + nanoseconds
-    return str(total_time)
+from universal_devkit.utils import get_timestamp
 
 
 def correct_timestamps(input_directory, bag_path, output_directory):
@@ -56,11 +35,10 @@ def correct_timestamps(input_directory, bag_path, output_directory):
 
         for filename in os.listdir(input_directory):
             filename_no_extension, extension = os.path.splitext(filename)
+            input_file = os.path.join(input_directory, filename)
+            output_file = os.path.join(output_directory, correct_timestamp + extension)
             if str(filename_no_extension) == str(timestamp):
-                shutil.copyfile(
-                    os.path.join(input_directory, filename),
-                    os.path.join(output_directory, correct_timestamp + extension),
-                )
+                shutil.copyfile(input_file, output_file)
 
 
 if __name__ == "__main__":
