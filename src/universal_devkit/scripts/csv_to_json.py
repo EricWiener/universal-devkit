@@ -3,6 +3,7 @@ import csv
 import json
 import uuid
 
+
 def main(csv_in, json_out):
     """Reads in a CSV file, converts it to a dictionary, and adds tokens
 
@@ -10,7 +11,7 @@ def main(csv_in, json_out):
         csv_in (str): the path to the CSV input file
         json_out (str): the path to save the resulting JSON file
     """
-    data_list = list(csv.DictReader(open(csv_in), skipinitialspace = True))
+    data_list = list(csv.DictReader(open(csv_in), skipinitialspace=True))
 
     for obj in data_list:
         if "token" not in obj:
