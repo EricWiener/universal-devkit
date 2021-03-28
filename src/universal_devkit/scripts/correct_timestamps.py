@@ -19,6 +19,16 @@ from universal_devkit.utils.utils import get_timestamp
 
 
 def correct_timestamps(input_directory, bag_path, output_directory):
+    """Script to correct timestamps if files were generated using ROS
+        bag time vs. ROS header time
+
+
+    Args:
+        input_directory (str): path to the directory of files to fix
+        bag_path (str): path to the bag the files were generated from
+        output_directory (str): path to the directory to store files
+            with correct names
+    """
     Path.mkdir(Path(output_directory), parents=True, exist_ok=True)
 
     # Read point cloud data from bag.
@@ -35,7 +45,12 @@ def correct_timestamps(input_directory, bag_path, output_directory):
         correct_timestamp = get_timestamp(json_dict)
 
         existing_files = glob.glob("{}*".format(timestamp))
-        assert existing_files <= 1
+
+        assert (
+            existing_files <= 1
+        ), "The number of files matching a timestamp should be <= 1"
+
+        # If there is a file with a matching name
         if len(existing_files) == 1:
             filename = existing_files[0]
             filename_no_extension, extension = os.path.splitext(filename)
@@ -43,12 +58,14 @@ def correct_timestamps(input_directory, bag_path, output_directory):
             output_file = os.path.join(output_directory, correct_timestamp + extension)
             shutil.copyfile(input_file, output_file)
 
+    input_bag.close()
+
 
 if __name__ == "__main__":
     # Construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-o", "--output", type=str, help="The output directory")
     ap.add_argument("-i", "--input", type=str, help="The input directory")
-    ap.add_argument("-b", "--bag", type=str, help="The original bag")
+    ap.add_argument("-b", "--bag", type=str, help="Path to the original bag")
     args = vars(ap.parse_args())
     correct_timestamps(args["input"], args["bag"], args["output"])
