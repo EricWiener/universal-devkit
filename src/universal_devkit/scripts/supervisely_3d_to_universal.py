@@ -7,19 +7,21 @@ $ python supervisely_3d_to_universal.py -i input_directory -o output_directory
 """
 
 import argparse
-import json
 import os
+from glob import glob
 from pathlib import Path
 
-from universal_devkit.utils import create_token
+from universal_devkit.utils.utils import create_token, read_json, write_json
 
 
 def convert_supervisely_3d_to_universal(input_directory, output_directory):
-    Path.mkdir(output_directory, parents=True, exist_ok=True)
+    Path(output_directory).mkdir(parents=True, exist_ok=True)
 
-    for filename in os.listdir(input_directory):
-        with open(os.path.join(input_directory, filename)) as f:
-            input_data = json.load(f)
+    for filepath in glob("{}/*.pcd.json".format(input_directory)):
+        # Get the filename with extensions (ex. 1212129.pcd.json)
+        filename = Path(filepath).name
+
+        input_data = read_json(filepath)
 
         output_data = []
         for figure in input_data["figures"]:
@@ -58,8 +60,7 @@ def convert_supervisely_3d_to_universal(input_directory, output_directory):
             ann["annotation_created"] = figure["createdAt"]
             output_data.append(ann)
 
-        with open(os.path.join(output_directory, filename), "w") as f:
-            json.dump(output_data, f)
+        write_json(output_data, os.path.join(output_directory, filename))
 
 
 if __name__ == "__main__":
