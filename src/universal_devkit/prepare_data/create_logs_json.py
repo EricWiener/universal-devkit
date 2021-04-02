@@ -1,5 +1,6 @@
 import csv
 import glob
+import os
 
 from universal_devkit.utils.utils import create_token, write_json
 
@@ -15,14 +16,14 @@ def get_logs(logs_dir_path):
     """
 
     # Assert that only one CSV file
-    csv_files = glob.glob(str(logs_dir_path) + "*.csv")
+    csv_files = glob.glob(os.path.join(str(logs_dir_path), "*.csv"))
     num_csv = len(csv_files)
     assert num_csv == 1
 
     # Read in a CSV of form: "logfile, date_captured, vehicle, location, notes"
     log_data = []
     with open(csv_files[0]) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=",")
+        csv_reader = csv.reader(csv_file, delimiter=",", skipinitialspace=True)
         row_number = 0
         # Go through each row
         for row in csv_reader:
@@ -31,7 +32,7 @@ def get_logs(logs_dir_path):
 
                 # Make sure all the logfiles in the CSV file correspond to
                 # actual log files in the directory
-                num_log_file = len(glob.glob(logs_dir_path + row[0]))
+                num_log_file = len(glob.glob(os.path.join(str(logs_dir_path), row[0])))
                 assert num_log_file == 1
 
                 # Use create_token() to create the token
@@ -49,5 +50,5 @@ def get_logs(logs_dir_path):
 
             row_number = row_number + 1
 
-    write_json(log_data, logs_dir_path)
+    write_json(log_data, os.path.join(str(logs_dir_path), "get_logs.json"))
     return log_data
