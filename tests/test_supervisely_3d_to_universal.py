@@ -16,7 +16,7 @@ def test_supervisely_3d_to_universal_single_file():
 
     # The correct output for the single file
     correct_output_path = get_relative_path(
-        "assets/supervisely_annotations/single_file_correct.json"
+        "assets/supervisely_annotations/single_file_correct.pcd.json"
     )
 
     # The path to use as the output directory
@@ -24,7 +24,7 @@ def test_supervisely_3d_to_universal_single_file():
         "assets/supervisely_annotations/single_file_output"
     )
     output_file_path = get_relative_path(
-        "assets/supervisely_annotations/single_file_output/input.json"
+        "assets/supervisely_annotations/single_file_output/input.pcd.json"
     )
 
     # Convert the annotations
