@@ -70,7 +70,6 @@ def extrinsic_to_static_transform(mat):
     Parameters:
     - mat: a 4x4 extrinsic matrix.
     """
-    translation, rotation = homogenous_to_static_transform(mat)
     x, y, z = mat[:3,3]
     yaw, pitch, roll = rotation_matrix_to_euler_angle(mat)
 
@@ -88,14 +87,6 @@ def get_homogeneous_transformation(rotation, translation):
     homogeneous[:3, :3] = rotation
     homogeneous[:3, -1:] = translation
     return homogeneous
-
-
-def homogenous_to_static_transform(mat):
-    """
-    Parameters:
-    - mat: a 4x4 homogenous matrix.
-    """
-    return mat[:3,:3], mat[:3,3]
 
 
 def get_relative_transformation(a_to_base, b_to_base):
