@@ -38,6 +38,18 @@ def euler_angle_to_rotation_matrix(theta):
     return R
 
 
+#euler_angle_to_rotation_matrix
+def rotation_matrix_to_euler_angle(R):
+    """
+    Converts a rotation matrix to [yaw, pitch, roll]
+    """
+    yaw = math.atan2(R[1,0], R[0,0])
+    pitch = math.atan2(-R[2,0], math.sqrt(R[2,1]**2 + R[2,2]**2))
+    roll = math.atan2(R[2,1], R[2,2])
+
+    return yaw, pitch, roll
+
+
 def static_transform_to_extrinsic(transform):
     """
     Calculates the extrinsic matrix for a ROS static_transform_publisher
@@ -54,6 +66,19 @@ def static_transform_to_extrinsic(transform):
     return homogeneous
 
 
+def extrinsic_to_static_transform(mat):
+    """
+    Converts an extrinsic matrix into rotational and translational components.
+    Parameters:
+    - mat: a 4x4 extrinsic matrix.
+    """
+    translation, rotation = homogenous_to_static_transform(mat)
+    x, y, z = mat[:3,3]
+    yaw, pitch, roll = rotation_matrix_to_euler_angle(mat)
+
+    return x, y, z, yaw, pitch, roll
+
+
 def get_homogeneous_transformation(rotation, translation):
     """
     Parameters:
@@ -65,6 +90,14 @@ def get_homogeneous_transformation(rotation, translation):
     homogeneous[:3, :3] = rotation
     homogeneous[:3, -1:] = translation
     return homogeneous
+
+
+def homogenous_to_static_transform(mat):
+    """
+    Parameters:
+    - mat: a 4x4 homogenous matrix.
+    """
+    return mat[:3,:3], mat[:3,3]
 
 
 def get_relative_transformation(a_to_base, b_to_base):
@@ -114,6 +147,10 @@ if __name__ == "__main__":
     [ 0.          1.          0.          0.        ]
     [-0.0198087   0.          0.99980379 -0.08562051]
     [ 0.          0.          0.          1.        ]]
+
+    Overall camera to velodyne transform
+    Translation (x, y, z): -0.059294861111785835 0.0 -0.08562051124429254
+    Rotation (y, p, r): 0.0 0.019810000000000008 0.0
     """
 
     print("Camera static transform: ")
@@ -132,3 +169,8 @@ if __name__ == "__main__":
     # Add values for the camera to velodyne here
     camera_to_velodyne = get_relative_transformation(camera_to_base, velodyne_to_base)
     print(camera_to_velodyne)
+
+    print("Overall camera to velodyne transform")
+    x, y, z, yaw, pitch, roll = extrinsic_to_static_transform(camera_to_velodyne)
+    print("Translation (x, y, z):", x, y, z)
+    print("Rotation (y, p, r):", yaw, pitch, roll)
