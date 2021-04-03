@@ -1,5 +1,4 @@
 import math
-
 import numpy as np
 
 
@@ -38,7 +37,6 @@ def euler_angle_to_rotation_matrix(theta):
     return R
 
 
-#euler_angle_to_rotation_matrix
 def rotation_matrix_to_euler_angle(R):
     """
     Converts a rotation matrix to [yaw, pitch, roll]
