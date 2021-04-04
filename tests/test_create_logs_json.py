@@ -17,7 +17,7 @@ def test_create_logs_json():
     output_file_path = get_relative_path("assets/example_logs/get_logs.json")
 
     # Convert the example logs
-    get_logs(example_logs_path)
+    get_logs(str(example_logs_path))
 
     # Make sure the output is correct
     correct_data = read_json(correct_output_path)
