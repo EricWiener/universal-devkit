@@ -1,6 +1,9 @@
 """
 Correct timestamps of already annotated files.
 
+This should be run inside a ROS enviroment. You will likely need to install
+rospy_message_converter with `pip install rospy-message-converter`
+
 $ python correct_timestamps.py -i input_directory -b bag -o output_directory
 """
 
@@ -15,7 +18,30 @@ import rosbag
 from rospy_message_converter import json_message_converter
 from tqdm import tqdm
 
-from universal_devkit.utils.utils import get_timestamp
+
+# Note that this is deliberately not imported from universal_devkit.utils.utils.py
+# to avoid needing to install the entire package inside a ROS enviroment
+def get_timestamp(imu_dict):
+    """The timestamp of a message does not necessarily equal
+    the timestamp in the message's header. The header timestamp
+    is more accurate and the timestamp of the message just corresponds
+    to whenever the bag received the message and saved it.
+
+    Args:
+        imu_dict (dict): dictionary of a single IMU reading
+
+    Returns:
+        str: a string timestamp to use for this IMU message.
+        Uses the header timestamp
+    """
+
+    # We need to convert the seconds to nanoseconds so we can add them
+    # We need to make sure the seconds value is an int, so the output
+    # string isn't formatted with scientific notation
+    seconds = int(imu_dict["header"]["stamp"]["secs"] * 1e9)
+    nanoseconds = imu_dict["header"]["stamp"]["nsecs"]
+    total_time = seconds + nanoseconds
+    return str(total_time)
 
 
 def correct_timestamps(input_directory, bag_path, output_directory):
@@ -35,6 +61,7 @@ def correct_timestamps(input_directory, bag_path, output_directory):
     input_bag = rosbag.Bag(bag_path)
 
     print("Reading data from " + bag_path + "...")
+    print("Correcting messages from " + input_directory + "...")
 
     # ============ Loop through ROS bag ===========
 
@@ -44,19 +71,25 @@ def correct_timestamps(input_directory, bag_path, output_directory):
         json_dict = json.loads(json_str)
         correct_timestamp = get_timestamp(json_dict)
 
-        existing_files = glob.glob("{}*".format(timestamp))
+        pattern = "{}/{}.*".format(input_directory, timestamp)
+        existing_files = glob(pattern)
 
         assert (
-            existing_files <= 1
+            len(existing_files) <= 1
         ), "The number of files matching a timestamp should be <= 1"
 
         # If there is a file with a matching name
         if len(existing_files) == 1:
-            filename = existing_files[0]
-            filename_no_extension, extension = os.path.splitext(filename)
-            input_file = os.path.join(input_directory, filename)
-            output_file = os.path.join(output_directory, correct_timestamp + extension)
-            shutil.copyfile(input_file, output_file)
+            filepath = existing_files[0]
+
+            # See: https://stackoverflow.com/a/35188296/6942666
+            # This will capture when you have multiple extensions like ".pcd.json"
+            extension = "".join(Path(filepath).suffixes)
+
+            # Copy over the file to the output directory
+            output_filename = correct_timestamp + extension
+            output_file = os.path.join(output_directory, output_filename)
+            shutil.copyfile(filepath, output_file)
 
     input_bag.close()
 
@@ -64,8 +97,14 @@ def correct_timestamps(input_directory, bag_path, output_directory):
 if __name__ == "__main__":
     # Construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-o", "--output", type=str, help="The output directory")
-    ap.add_argument("-i", "--input", type=str, help="The input directory")
-    ap.add_argument("-b", "--bag", type=str, help="Path to the original bag")
+    ap.add_argument(
+        "-o", "--output", type=str, required=True, help="The output directory"
+    )
+    ap.add_argument(
+        "-i", "--input", type=str, required=True, help="The input directory"
+    )
+    ap.add_argument(
+        "-b", "--bag", type=str, required=True, help="Path to the original bag"
+    )
     args = vars(ap.parse_args())
     correct_timestamps(args["input"], args["bag"], args["output"])
