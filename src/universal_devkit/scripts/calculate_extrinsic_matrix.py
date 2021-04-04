@@ -1,4 +1,5 @@
 import math
+
 import numpy as np
 
 
@@ -41,9 +42,9 @@ def rotation_matrix_to_euler_angle(R):
     """
     Converts a rotation matrix to [yaw, pitch, roll]
     """
-    yaw = math.atan2(R[1,0], R[0,0])
-    pitch = math.atan2(-R[2,0], math.sqrt(R[2,1]**2 + R[2,2]**2))
-    roll = math.atan2(R[2,1], R[2,2])
+    yaw = math.atan2(R[1, 0], R[0, 0])
+    pitch = math.atan2(-R[2, 0], math.sqrt(R[2, 1] ** 2 + R[2, 2] ** 2))
+    roll = math.atan2(R[2, 1], R[2, 2])
 
     return yaw, pitch, roll
 
@@ -65,15 +66,18 @@ def static_transform_to_extrinsic(transform):
 
 
 def extrinsic_to_static_transform(mat):
+    """Converts an extrinsic matrix into rotational and translational components.
+
+    Args:
+        mat (np.array): a 4x4 extrinsic matrix
+
+    Returns:
+        np.array: a 1x6 np.array of form x, y, z, yaw, pitch, roll
     """
-    Converts an extrinsic matrix into rotational and translational components.
-    Parameters:
-    - mat: a 4x4 extrinsic matrix.
-    """
-    x, y, z = mat[:3,3]
+    x, y, z = mat[:3, 3]
     yaw, pitch, roll = rotation_matrix_to_euler_angle(mat)
 
-    return x, y, z, yaw, pitch, roll
+    return np.array([x, y, z, yaw, pitch, roll])
 
 
 def get_homogeneous_transformation(rotation, translation):
