@@ -8,11 +8,12 @@ and a camera data ROS bag (from the same recording session). You can then pass i
 bags as arguments, and the data will be extracted for you so it is ready to be uploaded
 for annotating.
 
+You should have sourced your ROS enviroment before running this script.
 
 Source for ros to json converter
 https://github.com/uos/rospy_message_converter
 
-$ python IMU_pose.py -i raise-the-flag_imu.bag -t /imu/data/raw -o output_folder
+$ python ros_imu_pose.py -i raise-the-flag_imu.bag -t /imu/data/raw -o output_folder
 """
 
 import argparse
@@ -26,7 +27,7 @@ from tqdm import tqdm
 from universal_devkit.utils.utils import get_timestamp
 
 
-def main(input_bag_path, topic_specified, output_directory):
+def ros_imu_pose(input_bag_path, topic_specified, output_directory):
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
 
@@ -70,4 +71,4 @@ if __name__ == "__main__":
     ap.add_argument("-i", "--input_bag", type=str, help="The path to the input bag")
     ap.add_argument("-t", "--topic", type=str, help="Topic for the ROS bag")
     args = vars(ap.parse_args())
-    main(args["input_bag"], args["topic"], args["output"])
+    ros_imu_pose(args["input_bag"], args["topic"], args["output"])
