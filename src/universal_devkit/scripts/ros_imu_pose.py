@@ -61,12 +61,28 @@ def ros_imu_pose(input_bag_path, topic_specified, output_directory):
 
     # ============ Loop through ROS bag ===========
 
-    # Map from the timestamp of the IMU message (using the header time - not bag time)
-    # to the actual pose
-    data = {}
+    """
+    This will be a list of the form:
 
-    # Keep track of all the timestamps
-    timestamps = []
+        [
+                {
+                    "timestamp": 1532402927814384,
+                    "rotation": [
+                        0.5731787718287827,
+                        -0.0015811634307974854,
+                        0.013859363182046986,
+                        -0.8193116095230444
+                    ],
+                    "translation": [
+                        410.77878632230204,
+                        1179.4673290964536,
+                        0.0
+                    ]
+                },
+                ...
+        ]
+    """
+    data = []
 
     for topic, msg, timestamp in tqdm(input_bag.read_messages(topics=topic_specified)):
         try:
@@ -77,14 +93,16 @@ def ros_imu_pose(input_bag_path, topic_specified, output_directory):
         # Load from the JSON string
         json_dict = json.loads(json_str)
         header_timestamp = get_timestamp(json_dict)
-        data[header_timestamp] = json_dict
-        timestamps.append(header_timestamp)
+        data.append(
+            {
+                "timestamp": header_timestamp,
+                "rotation": json_dict["orientation"],
+                # set these to 0 because the IMU doesn't have position
+                "translation": [0.0, 0.0, 0.0],
+            }
+        )
 
     input_bag.close()
-
-    # Make sure the timestamps are sorted by
-    timestamps.sort()
-    data["timestamps"] = timestamps
 
     # Save to imu.json
     file_name = "imu"
