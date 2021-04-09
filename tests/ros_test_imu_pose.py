@@ -14,7 +14,7 @@ def test_imu_pose_single_file():
 
     # The path to use as the output directory
     output_file_dir = get_relative_path("assets/imu_pose/single_file_output")
-    output_file_path = get_relative_path("assets/imu_pose/single_file_output/IMU.json")
+    output_file_path = get_relative_path("assets/imu_pose/single_file_output/imu.json")
 
     topic = "/imu/data/raw"
 

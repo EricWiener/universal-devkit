@@ -19,47 +19,80 @@ $ python ros_imu_pose.py -i raise-the-flag_imu.bag -t /imu/data/raw -o output_fo
 import argparse
 import json
 import os
+from pathlib import Path
 
 import rosbag
 from rospy_message_converter import json_message_converter
 from tqdm import tqdm
 
-from universal_devkit.utils.utils import get_timestamp
+
+# Note that this is deliberately not imported from universal_devkit.utils.utils.py
+# to avoid needing to install the entire package inside a ROS enviroment
+def get_timestamp(imu_dict):
+    """The timestamp of a message does not necessarily equal
+    the timestamp in the message's header. The header timestamp
+    is more accurate and the timestamp of the message just corresponds
+    to whenever the bag received the message and saved it.
+
+    Args:
+        imu_dict (dict): dictionary of a single IMU reading
+
+    Returns:
+        str: a string timestamp to use for this IMU message.
+        Uses the header timestamp
+    """
+
+    # We need to convert the seconds to nanoseconds so we can add them
+    # We need to make sure the seconds value is an int, so the output
+    # string isn't formatted with scientific notation
+    seconds = int(imu_dict["header"]["stamp"]["secs"] * 1e9)
+    nanoseconds = imu_dict["header"]["stamp"]["nsecs"]
+    total_time = seconds + nanoseconds
+    return total_time
 
 
 def ros_imu_pose(input_bag_path, topic_specified, output_directory):
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
+    Path.mkdir(Path(output_directory), parents=True, exist_ok=True)
 
-        # Read point cloud data from bag.
+    # Read point cloud data from bag.
     input_bag = rosbag.Bag(input_bag_path)
 
     print("Reading data from " + input_bag_path + "...")
 
     # ============ Loop through ROS bag ===========
 
+    # Map from the timestamp of the IMU message (using the header time - not bag time)
+    # to the actual pose
     data = {}
-    timestamps = []
-    for topic, msg, timestamp in tqdm(input_bag.read_messages(topics=topic_specified)):
 
+    # Keep track of all the timestamps
+    timestamps = []
+
+    for topic, msg, timestamp in tqdm(input_bag.read_messages(topics=topic_specified)):
         try:
             json_str = json_message_converter.convert_ros_message_to_json(msg)
         except Exception:
-            print("Failed to convert msg: ", msg)
+            print("Failed to convert message: ", msg)
 
-        json_dict = eval(json_str)
-        timestamp = get_timestamp(json_dict)
-        data[str(timestamp)] = json_dict
-        timestamps.append(str(timestamp))
-
-    data["timestamps"] = timestamps
-    # Save
-    file_name = "IMU"
-    file_path = os.path.join(output_directory, file_name + ".json")
-    with open(file_path, "w") as outfile:
-        json.dump(data, outfile)
+        # Load from the JSON string
+        json_dict = json.loads(json_str)
+        header_timestamp = get_timestamp(json_dict)
+        data[header_timestamp] = json_dict
+        timestamps.append(header_timestamp)
 
     input_bag.close()
+
+    # Make sure the timestamps are sorted by
+    timestamps.sort()
+    data["timestamps"] = timestamps
+
+    # Save to imu.json
+    file_name = "imu"
+    file_path = os.path.join(output_directory, file_name + ".json")
+
+    with open(file_path, "w") as outfile:
+        print("Saving output JSON to: ", file_path)
+        json.dump(data, outfile)
 
 
 if __name__ == "__main__":
@@ -68,7 +101,11 @@ if __name__ == "__main__":
     ap.add_argument(
         "-o", "--output", type=str, default="output", help="The output directory"
     )
-    ap.add_argument("-i", "--input_bag", type=str, help="The path to the input bag")
-    ap.add_argument("-t", "--topic", type=str, help="Topic for the ROS bag")
+    ap.add_argument(
+        "-i", "--input_bag", type=str, required=True, help="The path to the input bag"
+    )
+    ap.add_argument(
+        "-t", "--topic", type=str, default="/imu/data/raw", help="Topic for the ROS bag"
+    )
     args = vars(ap.parse_args())
     ros_imu_pose(args["input_bag"], args["topic"], args["output"])
