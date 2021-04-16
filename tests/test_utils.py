@@ -50,7 +50,3 @@ def test_get_closest_match():
 
     # Test 4:
     assert get_closest_match(test, 30) == 30
-
-
-if __name__ == "__main__":
-    test_get_all_non_hidden_files()
