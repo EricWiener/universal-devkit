@@ -18,6 +18,7 @@ def convert_supervisely_3d_to_universal(input_directory, output_directory):
     Path(output_directory).mkdir(parents=True, exist_ok=True)
 
     for filepath in glob("{}/*.pcd.json".format(input_directory)):
+        # Get the filename with extensions (ex. 1212129.pcd.json)
         filename = Path(filepath).name
 
         input_data = read_json(filepath)
