@@ -23,6 +23,12 @@ def convert_supervisely_3d_to_universal(input_directory, output_directory):
 
         input_data = read_json(filepath)
 
+        objectkey2class = {}
+        for object in input_data["objects"]:
+            object_key = object["key"]
+            class_label = object["classTitle"]
+            objectkey2class[object_key] = class_label
+
         output_data = []
         for figure in input_data["figures"]:
             ann = {}
@@ -51,6 +57,8 @@ def convert_supervisely_3d_to_universal(input_directory, output_directory):
                 figure_geometry["rotation"]["y"],
                 figure_geometry["rotation"]["z"],
             ]
+
+            ann["class_label"] = objectkey2class[figure["objectKey"]]
 
             ann["prev"] = ""
             ann["next"] = ""
